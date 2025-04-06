@@ -174,3 +174,7 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# JetBeans IDEs
+**/.idea/workspace.xml
+**/.idea/tasks.xml
