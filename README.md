@@ -38,7 +38,44 @@ where:
 1) changes made in a draft-# version of a script will automatically propagate (by email or push notification) to people working on derivatives (e.g. costumes)
 2) if some ideas appear on later stage (e.g. [costume](https://en.wikipedia.org/wiki/Predator_(fictional_species)#:~:text=The%20Predator%20was%20originally%20designed,weeks%2C%20ending%20in%20February%201987.)) it shall be possible to navigate back to the script and consistently incorporate it
 
-## Resources to check
+## Target Audience and Profitability Considerations
+
+This tool aims as a primary collaboration platform for all cust and crew members, 
+not limited to a persona of a screenwriter. That is a lot of people, with a paid subscription per seat.
+
+Subscription might be free for screenwriters themselves, to attract them into the product.
+
+In addition, the tool can also be used in game development, which is an additional market.
+
+## Scope of Work & Guidance
+
+This section covers approximate plan for the duration of the hackathon (20 days, till Apr, 25).
+
+Sure, there is no strict bounds and order of work can be mixed as you like. 
+
+Also, many steps are optional and can be omitted (if we don't have time/competence to perform them properly).
+
+### Week-1: Research
+
+ - [ ] Learn about screenwriting (see [Resources to Check](#resources-to-check) section)
+ - [ ] Check existing tools on the market
+ - [ ] Brainstorm ideas about potential functionality
+ - [ ] more to be added... 
+
+### Week-2: Build
+
+ - [ ] draw a few high fidelity mockups to show an idea of potential app
+ - [ ] implement different ideas as stand-alone python-notebooks/script to prove we can solve them
+ - [ ] implement a small UI application with a piece of functionality (to highlight interactivity)
+ - [ ] more to be added...
+
+### Week-3: Present
+
+  - [ ] Create a slide deck to present the idea
+  - [ ] Create a pitch script
+  - [ ] Record a 3-5 minutes presentation video
+
+## Resources to Check
 
  - [Trumbo film](https://en.wikipedia.org/wiki/Trumbo_(2015_film)) - watch the movie if you are curious about the project name
  - [The Tools of Screenwriting book](https://www.amazon.co.uk/gp/product/0312119089) - **essential read** to grasp an idea of a screen/script writing. About 100 pages.
