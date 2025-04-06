@@ -40,7 +40,7 @@ where:
 
 ## Resources to check
 
- - [Tumbo film](https://en.wikipedia.org/wiki/Trumbo_(2015_film)) - watch the movie if you are curious about the project name
+ - [Trumbo film](https://en.wikipedia.org/wiki/Trumbo_(2015_film)) - watch the movie if you are curious about the project name
  - [The Tools of Screenwriting book](https://www.amazon.co.uk/gp/product/0312119089) - **essential read** to grasp an idea of a screen/script writing. About 100 pages.
  - [sudowrite app](https://sudowrite.com/) - a competing product for book writers. Please check optionally.
 
