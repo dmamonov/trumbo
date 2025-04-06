@@ -86,7 +86,7 @@ separately and combine them together in the final demo-video.
 It will be great to have an interactive part as an application, 
 but not everything have to be there. 
 
- - Feel free do to your part of project in your own repository (if you like)
+ - Feel free do to your part of the project in your own repository (if you like)
  - Feel free to use any language for the project (of your choice)
  - Feel free to use any technology (if you need)
  - Feel free to use any IDE/Tool for work (you prefer)
