@@ -74,6 +74,25 @@ Also, many steps are optional and can be omitted (if we don't have time/competen
  - [ ] Create a pitch script
  - [ ] Record a 3-5 minutes presentation video
 
+## Guidance on Tech/Repo/Process
+
+While it will be really great to have a resulting code integrated together
+into single interactive application, that is really hard to achieve and probably
+not necessary for the scope of the hackathon.
+
+This is why the aim is to implement different pieces of functionality
+separately and combine them together in the final demo-video. 
+
+It will be great to have an interactive part as an application, 
+but not everything have to be there. 
+
+ - Feel free do to your part of project in your own repository (if you like)
+ - Feel free to use any language for the project (of your choice)
+ - Feel free to use any technology (if you need)
+ - Feel free to use any IDE/Tool for work (you prefer)
+
+P.S. `python3` is totally fine.
+
 ## Resources to Check
 
  - [Trumbo film](https://en.wikipedia.org/wiki/Trumbo_(2015_film)) - watch the movie if you are curious about the project name
