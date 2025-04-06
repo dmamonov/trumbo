@@ -55,25 +55,24 @@ Sure, there is no strict bounds and order of work can be mixed as you like.
 
 Also, many steps are optional and can be omitted (if we don't have time/competence to perform them properly).
 
-### Week-1: Research
+### Week-1: Research (6-13 Apr)
 
  - [ ] Learn about screenwriting (see [Resources to Check](#resources-to-check) section)
  - [ ] Check existing tools on the market
- - [ ] Brainstorm ideas about potential functionality
+ - [ ] Brainstorm ideas about potential functionality: (N)FRs
+ - [ ] initial draft outline of presentation video
+ - [ ] initial draft about High Level Design: architecture diagram, components
  - [ ] more to be added... 
 
-### Week-2: Build
+### Week-2: Build (14-22, NB: Easter)
 
  - [ ] draw a few high fidelity mockups to show an idea of potential app
  - [ ] implement different ideas as stand-alone python-notebooks/script to prove we can solve them
  - [ ] implement a small UI application with a piece of functionality (to highlight interactivity)
- - [ ] more to be added...
-
-### Week-3: Present
-
-  - [ ] Create a slide deck to present the idea
-  - [ ] Create a pitch script
-  - [ ] Record a 3-5 minutes presentation video
+ - [ ] initial QA/evaluation
+ - [ ] Create a slide deck to present the idea
+ - [ ] Create a pitch script
+ - [ ] Record a 3-5 minutes presentation video
 
 ## Resources to Check
 
