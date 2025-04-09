@@ -1,0 +1,60 @@
+# Base
+pytz
+python-slugify
+jinja2
+
+# Django
+Django==3.2
+django-cors-headers==3.7.0
+django-rest-passwordreset
+
+# Environment
+django-environ==0.4.5
+
+# Django REST Framework
+djangorestframework==3.12.4
+django-filter==2.4.0
+drf-nested-routers==0.93.4
+djangorestframework-simplejwt==4.6.0
+pyJWT
+
+# Passwords security
+argon2-cffi==21.3.0
+
+# Static files
+whitenoise==5.2.0
+
+# AWS
+boto3==1.17.64
+
+# Storage
+psycopg2-binary==2.9.3
+django-storages
+
+# Channels
+channels
+channels_redis
+
+
+# CMS
+django-modeltranslation
+
+# Images
+pillow
+
+# Swagger
+drf-yasg==1.21.4
+
+# Authentication
+twilio
+
+# Cipher
+django-cryptography==1.1
+
+# interface
+django-admin-interface
+
+# AI
+openai
+mistralai
+pydantic

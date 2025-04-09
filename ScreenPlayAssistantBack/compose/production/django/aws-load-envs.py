@@ -1,0 +1,41 @@
+from api.utils.aws.envs.load_secrets import get_secret_set
+from api.utils.aws.envs.load_parameters import get_params_from_ssm
+import os
+
+PARAMETERS_PATH = os.getenv('PARAMETERS_PATH', '/app/')
+AWS_REGION = os.getenv('AWS_REGION', 'us-east-2')
+STRING_PARAMETERS = [
+    'CORS_ALLOWED_ORIGINS',
+    'DB_SECRETS_NAME',
+    'REDIS_CHANNEL_LAYER_HOST',
+    'FRONT_END_URL',
+    'AWS_STORAGE_BUCKET_NAME',
+    'DJANGO_DEBUG',
+    'ENVIRONMENT',
+]
+# get params from aws
+AWS_PARAMETERS = get_params_from_ssm(PARAMETERS_PATH, STRING_PARAMETERS, AWS_REGION) if PARAMETERS_PATH else {}
+
+# get db secrets
+DB_SECRETS_NAME = AWS_PARAMETERS.get('DB_SECRETS_NAME')
+DB_CREDENTIALS = get_secret_set(DB_SECRETS_NAME, AWS_REGION) if DB_SECRETS_NAME else {}
+
+# TODO: set following envs
+"""
+DJANGO_DEBUG
+ENVIRONMENT
+
+DB_ENGINE
+DB_DATABASE
+DB_USER
+DB_PASSWORD
+DB_PORT
+DB_HOST
+
+FRONT_END_URL
+
+REDIS_CHANNEL_LAYER_HOST
+SENTRY_DSN
+AWS_STORAGE_BUCKET_NAME
+CORS_ALLOWED_ORIGINS
+EMAIL_NO_REPLY"""

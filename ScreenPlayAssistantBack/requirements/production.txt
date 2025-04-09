@@ -1,0 +1,11 @@
+# PRECAUTION: avoid production dependencies that aren't in development
+
+-r ./base.txt
+
+#gunicorn
+Twisted[tls,http2]
+daphne
+sentry-sdk
+
+# Media
+django-storages
