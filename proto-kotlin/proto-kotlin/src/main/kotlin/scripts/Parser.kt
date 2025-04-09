@@ -7,6 +7,8 @@ import kotlin.io.path.readLines
 sealed class Block(private val prefix: String) {
     abstract val lines: List<String>
 
+    fun toText(): String = lines.joinToString(separator = "\n")
+
     override fun toString(): String {
         return "-".repeat(80) + "\n" + lines.joinToString(separator = "\n") { "$prefix$it" }
     }
@@ -14,7 +16,10 @@ sealed class Block(private val prefix: String) {
 
 class CoverPage(override val lines: List<String>) : Block("COVER: ")
 class Title(override val lines: List<String>) : Block("TITLE: ")
-class Scene(override val lines: List<String>) : Block("")
+class Scene(override val lines: List<String>) : Block("") {
+    val caption: String = lines[0]
+}
+
 class TheEnd(override val lines: List<String>) : Block("END: ")
 
 class Script(
@@ -34,7 +39,6 @@ fun parseScript(scriptFile: File): Script {
     var sceneLines = mutableListOf<String>()
     val theEndLines = mutableListOf<String>()
 
-    val offset = "        "
     var inScript = false
     var inScene = false
     var offScript = false
@@ -79,8 +83,11 @@ fun parseScript(scriptFile: File): Script {
     )
 }
 
+fun parseAliens1985() = parseScript(File("scripts/aliens.txt"))
+
+
 fun main() {
-    val script = parseScript(File("scripts/aliens.txt"))
+    val script = parseAliens1985()
 
     println(script.cover)
     println(script.title)
@@ -88,4 +95,6 @@ fun main() {
     script.scenes.subList(0, minOf(10, script.scenes.size)).forEach { println(it) }
     println(script.theEnd)
 }
+
+
 
