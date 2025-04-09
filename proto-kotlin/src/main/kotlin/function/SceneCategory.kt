@@ -7,6 +7,8 @@ import dev.langchain4j.data.message.UserMessage
 import dev.langchain4j.model.chat.ChatLanguageModel
 import dev.langchain4j.model.chat.request.ChatRequest
 import dev.langchain4j.model.chat.request.ResponseFormat
+import dev.langchain4j.model.mistralai.MistralAiChatModel
+import dev.langchain4j.model.mistralai.MistralAiChatModelName
 import dev.langchain4j.model.openaiofficial.OpenAiOfficialChatModel
 import onlinedb.scripts.Scene
 import onlinedb.scripts.parseAliens1985
@@ -61,7 +63,7 @@ fun classifyScene(model: ChatLanguageModel, scene: Scene): SceneCategory {
                             "You must return JSON structure {\"category\": \"...value...\"}."
                 ),
                 UserMessage(scene.toText())
-            ).responseFormat(ResponseFormat.JSON)
+            )//.responseFormat(ResponseFormat.JSON)
             .build()
     )
 
@@ -72,13 +74,30 @@ fun classifyScene(model: ChatLanguageModel, scene: Scene): SceneCategory {
 
 
 fun main() {
+    runWithMistral()
+}
+
+private fun runWithOpenAi() {
     val model: ChatLanguageModel = OpenAiOfficialChatModel.builder()
         .apiKey(System.getenv("OPENAI_API_KEY"))
         .modelName(ChatModel.GPT_4O_MINI)
         .build()
 
 
-    parseAliens1985().scenes.subList(0,10).forEach {scene ->
+    parseAliens1985().scenes.subList(0, 10).forEach { scene ->
+        val category = classifyScene(model, scene)
+        println("${scene.caption} = $category")
+    }
+}
+
+private fun runWithMistral() {
+    val model: ChatLanguageModel = MistralAiChatModel.builder()
+        .apiKey(System.getenv("MISTRAL_AI_API_KEY"))
+        .modelName(MistralAiChatModelName.MISTRAL_LARGE_LATEST)
+        .build()
+
+
+    parseAliens1985().scenes.subList(0, 10).forEach { scene ->
         val category = classifyScene(model, scene)
         println("${scene.caption} = $category")
     }
