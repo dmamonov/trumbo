@@ -85,6 +85,8 @@ fun main() {
 }
 
 /*
+        Run1:
+        ----------------------------------------------------------------------------
         FADE IN - suspense
         INT. NARCISSUS                                            2 - incident
         INT. HOSPITAL ROOM - TIGHT ON RIPLEY - GATEWAY STATION    3 - crisis
@@ -95,4 +97,31 @@ fun main() {
         INT. CONFERENCE ROOM - TIGHT ON RIPLEY - LATER            8 - crisis
         INT. CORRIDOR                                             9 - complication
         EXT. ALIEN LANDSCAPE - DAY                               10 - representation
+
+
+        Run2:
+        ----------------------------------------------------------------------------
+        FADE IN = suspense
+        INT. NARCISSUS                                            2 = suspense
+        INT. HOSPITAL ROOM - TIGHT ON RIPLEY - GATEWAY STATION    3 = crisis
+        EXT. PARK                                                 4 = crisis
+        INT. CORRIDOR - GATEWAY                                   5 = progression
+        INT. CONFERENCE ROOM - ON RIPLEY - GATEWAY                6 = crisis
+        INT. CORRIDOR                                             7 = continuity
+        INT. CONFERENCE ROOM - TIGHT ON RIPLEY - LATER            8 = crisis
+        INT. CORRIDOR                                             9 = complication
+        EXT. ALIEN LANDSCAPE - DAY                               10 = null
+
+        Run3:
+        ----------------------------------------------------------------------------
+        FADE IN = suspense
+        INT. NARCISSUS                                            2 = progression
+        INT. HOSPITAL ROOM - TIGHT ON RIPLEY - GATEWAY STATION    3 = crisis
+        EXT. PARK                                                 4 = crisis
+        INT. CORRIDOR - GATEWAY                                   5 = progression
+        INT. CONFERENCE ROOM - ON RIPLEY - GATEWAY                6 = crisis
+        INT. CORRIDOR                                             7 = null
+        INT. CONFERENCE ROOM - TIGHT ON RIPLEY - LATER            8 = crisis
+        INT. CORRIDOR                                             9 = complication
+        EXT. ALIEN LANDSCAPE - DAY                               10 = representation
  */
