@@ -72,10 +72,7 @@ class ScreenPlaySteps:
 
 def get_and_save_characters_from_llm(screenplay: ScreenPlay):
     # Get character data from the LLM
-    try:
-        characters_data = ScreenPlaySteps.characters_from_play.execute(screenplay.content)
-    except json.decoder.JSONDecodeError:
-        characters_data = {}
+    characters_data = ScreenPlaySteps.characters_from_play.execute(screenplay.content)
     # Extract all character names from the LLM response
     names = [character_data.name for character_data in characters_data]
     

@@ -15,38 +15,8 @@ from django.http import HttpResponseRedirect
 import os
 from django.utils.html import format_html
 
-def export_characters_markdown(screenplay):
-    """
-    Generate Markdown string for characters in a screenplay and save it to a file.
-
-    Returns:
-        str: Relative path to the saved file (for building download URL).
-    """
-    filename = f"{slugify(screenplay.title)}-characters-{datetime.now().strftime('%Y%m%d%H%M%S')}.md"
-    output_dir = os.path.join(settings.MEDIA_ROOT, 'exports')
-    os.makedirs(output_dir, exist_ok=True)
-
-    filepath = os.path.join(output_dir, filename)
-
-    markdown = f"# Characters in *{screenplay.title}*\n\n"
-    characters = screenplay.characters.all()
-
-    if not characters:
-        markdown += "_No characters found for this screenplay._"
-    else:
-        for character in characters:
-            markdown += f"## {character.name}\n"
-            if character.description:
-                markdown += f"**Description:** {character.description}\n\n"
-            if character.profile:
-                markdown += f"**Profile:**\n{character.profile}\n\n"
-            else:
-                markdown += "_No profile provided._\n\n"
-
-    with open(filepath, 'w', encoding='utf-8') as f:
-        f.write(markdown)
-
-    return os.path.join('exports', filename)
+import json
+from django.conf import settings
 
 @admin.register(ScreenPlay)
 class ScreenPlayAdmin(admin.ModelAdmin):
@@ -56,12 +26,20 @@ class ScreenPlayAdmin(admin.ModelAdmin):
     @admin.action(description="Get and Save Characters")
     def get_and_save_characters(self, request, queryset):
         for screen_play in queryset:
-            created_new, old_characters = get_and_save_characters_from_llm(screen_play)
+            try:
+                created_new, old_characters = get_and_save_characters_from_llm(screen_play)
+            except json.decoder.JSONDecodeError:
+                self.message_user(
+                    request,
+                    "Error Decoding agent's response",
+                    messages.ERROR,
+                )
+                return
             self.message_user(
                 request,
                 ngettext(
-                    "%d character was successfully identifeid and saved.",
-                    "%d characters were successfully identifeid and saved.",
+                    "%d character was successfully identified and saved.",
+                    "%d characters were successfully identified and saved.",
                     len(created_new),
                 )
                 % len(created_new),
@@ -75,7 +53,7 @@ class ScreenPlayAdmin(admin.ModelAdmin):
             return
 
         screenplay = queryset.first()
-        relative_path = export_characters_markdown(screenplay)
+        relative_path = screenplay.export_characters_markdown()
         file_url = f"{settings.MEDIA_URL}{relative_path}"
 
         self.message_user(request, format_html(f"Export complete! <a href='{file_url}' target='_blank'>Download Markdown file</a>"), level=messages.SUCCESS)
