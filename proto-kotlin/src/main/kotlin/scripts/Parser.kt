@@ -83,7 +83,7 @@ fun parseScript(scriptFile: File): Script {
     )
 }
 
-fun parseAliens1985() = parseScript(File("scripts/aliens.txt"))
+fun parseAliens1985() = parseScript(File("scripts/aliens1985.txt"))
 
 
 fun main() {
