@@ -178,3 +178,12 @@ cython_debug/
 # JetBeans IDEs
 **/.idea/workspace.xml
 **/.idea/tasks.xml
+
+
+# Python
+.venv
+
+
+# environment
+.env
+.env.local
