@@ -52,17 +52,20 @@ fun parseScript(scriptFile: File): Script {
     }
 
     lines.forEach { line ->
+        if (false) {
+            println("$inScript/$inScene/$offScript = ${line.trim()}")
+        }
         if (!inScript) {
             if (line.startsWith("----")) inScript = true
             coverLines.add(line)
         } else {
             if (line.trim() == "THE END") offScript = true
             if (!offScript) {
-                if (line.trim() == "FADE IN") inScene = true
+                if (line.trim().startsWith("FADE IN")) inScene = true
                 if (!inScene) {
                     titleLines.add(line)
                 } else {
-                    if (line.trim().startsWith("INT.") || line.trim().startsWith("EXT.")) {
+                    if (line.trim().startsWith("INT") || line.trim().startsWith("EXT")) {
                         appendSceneIfPresent()
                     }
                     sceneLines.add(line)
@@ -84,6 +87,8 @@ fun parseScript(scriptFile: File): Script {
 }
 
 fun parseAliens1985() = parseScript(File("scripts/aliens1985.txt"))
+
+fun parseAlien1976EarlyDraft() = parseScript(File("scripts/alien1976_early_draft.txt"))
 
 
 fun main() {
