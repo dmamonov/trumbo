@@ -23,6 +23,48 @@ fun main() {
 You are assisting a professional screenwriter.
 You task is to highlight all mentions of character in a scene using markdown bold formatting.
 Please ignore names of other objects (e.g. model, street or ship names).
+
+Here is the list of characters:
+
+ - Ripley, Ellen Ripley, Warrant Officer Ripley  
+ - Newt, Rebecca "Newt" Jorden  
+ - Hicks, Corporal Hicks  
+ - Burke, Carter Burke  
+ - Gorman, Lieutenant Gorman  
+ - Vasquez, Private Vasquez  
+ - Hudson, Private Hudson  
+ - Bishop, Bishop (ECA)  
+ - Apone, Master Sergeant Apone  
+ - Jones, Jones (the cat)  
+ - Bishop, ECA Bishop  
+ - Jonesy (the cat)  
+ - Lambert, Lambert (original crew member)  
+ - Dallas, Dallas (original crew member)  
+ - Parker, Parker (original crew member)  
+ - Brett, Brett (original crew member)  
+ - Kane, Kane (original crew member)  
+ - Ash, Ash (android from original crew)  
+ - Van Leuwen, ICC Van Leuwen  
+ - ECA Rep, ECA Representative  
+ - Doctor, Doctor (in hospital scene)  
+ - Med-Tech, Med-Tech (in hospital scene)  
+ - Jorden, Russ Jorden  
+ - Anne, Anne Jorden  
+ - Tim, Tim (Jorden's son)  
+ - Med-Tech, Female Med-Tech (in hospital scene)  
+ - Simpson, Operations Manager Simpson  
+ - Lydecker, Assistant Operations Manager Lydecker  
+ - Dr. Marachuk, John L. (cocooned colonist)  
+ - Detrich, Corporal Detrich  
+ - Ferro, Corporal Ferro  
+ - Drake, Private Drake  
+ - Wierzbowski, Private Wierzbowski  
+ - Frost, Private Frost  
+ - Spunkmeyer, PFC Spunkmeyer  
+ - Crowe, Private Crowe  
+ - Weyland, Weyland-Yutani Company Representative  
+ - Insurance Investigator, Insurance Investigator (colonial investigation board)  
+ - ECA Rep (ECA Representative)  
 """
                     ),
                     UserMessage(text)
@@ -36,50 +78,266 @@ Please ignore names of other objects (e.g. model, street or ship names).
     println(
         highlightCharacters(
             """
-        EXTERIOR - SHIP AT LIGHT SPEED - LATER
+INT. BRIDGE - DAY
 
-        The ship's speed is so great that there is perceptible movement in the universe all around.
+        All viewscreens operational.
 
-        There is a strange corona effect which causes the stars approaching
-        the ship to appear blue, and the receding ones to be red.  This is
-        redshift, made visible because of their incredible velocity.
+                                 DALLAS
+                  Engage artificial gravity.
 
-        INTERIOR - BRIDGE - OUTER SPACE
+        Lambert throws a switch.
+        The ship lurches.
 
-        They are unstrapping.
+                                 LAMBERT
+                  Engaged.
 
-                                 ROBY
-                  That's the part that always makes me
-                  feel like I'm gonna puke -- when we
-                  accelerate into light speed.
+                                 DALLAS
+                  Altering the vector now.
 
-                                 STANDARD
-                  Quit complaining; we're in space.
+        A huge tremor runs throughout the ship.
 
-        They rise and head out of the room.
+                                 PARKER'S VOICE
+                         (o.s.)
+                  Dust is clogging the damn intakes
+                  again.  We're overloading.
 
-        INTERIOR - CORRIDOR
+                                 DALLAS
+                  Just hold us together until
+                  we're beyond G1...
 
-        As they walk along.
+        The pitch of the engines changes...deepens.
 
-                                 STANDARD
-                  I think the best thing to do with
-                  Broussard is to just freeze him as
-                  he is.  It'll arrest the progress of
-                  his disease, and he can get complete
-                  medical attention when we get back
-                  to the Colonies.
+        EXT. NOSTROMO - DAY
 
-                                 ROBY
-                  We'll have to go into quarantine,
-                  maybe for quite a while.
+        The ship moves at an acute angle.
+        Slices through the boiling clouds.
 
-                                 STANDARD
-                  That's okay, he can remain in
-                  hypersleep until they're ready to
-                  treat him.
+        INT. ENGINE ROOM CUBICLE
 
-        They enter the infirmary.
+        Parker and Brett watching the guages.
+
+        INT. BRIDGE - DAY
+
+        Outside the screens, clouds, clouds, clouds.
+        Another tremor runs through the ship.
+        The crew's eyes riveted to their instruments.
+
+                                 DALLAS
+                  Let's pick up the money and go
+                  home.
+
+        EXT. NOSTROMO
+
+        The ship clears the top of the cloud layer.
+        Bursts out into star-sprinkled space.
+        Trailing a wake of glimmering dust flecks.
+        Attached itself to the hovering refinery.
+
+        INT. ENGINE ROOM CUBICLE
+
+        Brett waves his arms in exultation.
+
+                                 BRETT
+                  We did it
+
+                                 PARKER
+                  Walk in the park.  When we fix
+                  something it stays fixed.
+
+        Big smiles.
+
+        INT. BRIDGE
+
+        The Nostromo now safely beyond gravity.
+
+                                 DALLAS
+                  Set our course and get us up
+                  to light plus four.
+
+        Lambert begins punching buttons.
+
+                                 LAMBERT
+                  Feets get me out of here.
+
+        EXT. OUTER SPACE
+
+        The Nostromo now at light speed.
+        Preceptible movement in the surrounding universe.
+        A corona effect emerges.
+        Stars approaching the Nostromo appear blue.
+        Receding stars going to amber.
+        Redshift, made visible because of the craft's velocity.
+
+        INT. MESS
+
+        Parker, Brett, Dallas and Ripley around the table.
+        Drinking coffee.
+
+                                 PARKER
+                  The best thing to do is just to
+                  freeze him.  Stop the goddam
+                  disease.  He can get a doctor to
+                  look at him when we get back home.
+
+                                 BRETT
+                  Right.
+
+                                 RIPLEY
+                  Whenever he says anything you say
+                  'right'.  You know that, Brett.
+
+                                 BRETT
+                  Right.
+
+                                 RIPLEY
+                  What do you think, Parker.  Your
+                  staff just follows you around and
+                  says 'right'.  Like a regular parrot.
+
+        Parker turns to Brett.
+
+                                 PARKER
+                  Yeah.  Shape up.  What are you,
+                  some kind of parrot.
+
+                                 BRETT
+                  Right.
+
+                                 DALLAS
+                  Knock it off... Kane will have
+                  to go into quarantine.
+
+                                 RIPLEY
+                  Yeah.  And so will we.
+
+        Lambert enters.
+
+                                 LAMBERT
+                  How about a little something to
+                  lower your spirits.
+
+                                 DALLAS
+                  Thrill me.
+
+                                 LAMBERT
+                  According to my calculations...
+                  based on the time spent getting
+                  to and from the planet and the
+                  speed at which it's moving away
+                  from the other...
+
+                                 DALLAS
+                  Give me the short version...
+
+                                 LAMBERT
+                  It'll take us six weeks to get
+                  back on course.
+
+                                 DALLAS
+                  How far to Earth.
+
+                                 LAMBERT
+                  Ten months.
+
+                                 RIPLEY
+                  Christ.
+
+        Beep.
+
+                                 DALLAS
+                  Dallas.
+
+                                 ASH
+                         (voice over)
+                  Come and see Kane right away...
+
+                                 DALLAS
+                  Any change in his condition.
+
+                                 ASH
+                         (voice over)
+                  It's simpler if you just come
+                  see him.
+
+        INT. CORRIDOR OUTSIDE INFIRMARY WINDOW
+
+        What they see is...Not what they expect.
+        Kane is sitting up in bed...wide awake.
+        They enter...
+
+                                 LAMBERT
+                  Kane...Are you all right.
+
+                                 KANE
+                  Mouth's dry...can I have some
+                  water.
+
+        Instantly, Ash brings him a plastic cup and water.
+        Kane gulps it down in a swallow.
+
+                                 KANE
+                  More.
+
+        Ripley quickly fills a much bigger container.
+        Hands it to Kane.
+        He greedily consumes the entire contents.
+        Then sags back, panting, on the bunk.
+
+                                 DALLAS
+                  How do you feel.
+
+                                 KANE
+                  Terrible.  What happened to me.
+
+                                 ASH
+                  You don't remember.
+
+                                 KANE
+                  Don't remember anything.  I can
+                  barely remember my name.
+
+                                 PARKER
+                  Do you hurt.
+
+                                 KANE
+                  All over.  Feel like somebody's
+                  been beating me with a stick
+                  for about six years.
+                         (smiles)
+                  God, I'm hungry.
+
+                                 RIPLEY
+                  What's the last thing you can
+                  remember.
+
+                                 KANE
+                  I don't know.
+
+                                 DALLAS
+                  Do you remember what happened
+                  on the planet.
+
+                                 KANE
+                  Just some horrible dream
+                  about smothering.  Where
+                  are we.
+
+                                 RIPLEY
+                  We're on our way home.
+
+                                 BRETT
+                  Getting ready to go back into
+                  the freezers.
+
+                                 KANE
+                  I'm starving.  I want some food
+                  first.
+
+                                 PARKER
+                  I'm pretty hungry myself.
+
+                                 DALLAS
+                  One meal before bed.
     """.trimIndent()
         )
     )

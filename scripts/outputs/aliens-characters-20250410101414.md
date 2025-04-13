@@ -102,11 +102,7 @@ Drake evolves from a tough soldier to a fierce protector, showing his loyalty an
 
 ---
 
-## Ellen Ripley
-> _All names or nicknames mentioned in the story_
-
-### Role in the Story
-Protagonist
+## Ripley (Protagonist)
 
 ### Physical Appearance
 A woman in her 30s, with a strong build, often seen in practical clothing suited for survival situations.
