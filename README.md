@@ -11,6 +11,9 @@ To give screenwriters and film directors a productivity tool
 that optimizes routine operations and reduces communication overhead — 
 similar to what modern [IDE](https://www.jetbrains.com/idea/) and [GitHub](https://github.com/) tools do for software development.
 
+## Demo
+[![Watch the demo videp](assets/demo-cover.png)](https://www.youtube.com/watch?v=rBilzrJir-M)
+
 ## Key Ideas
 
 A movie script is a well-structured text that:
