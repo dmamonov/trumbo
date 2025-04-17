@@ -1,4 +1,4 @@
-from api.screenplays.models import Character, ScreenPlay
+from api.screenplays.models import Character, ScreenPlay, SceneHighlight
 from pydantic import BaseModel as PydanticBaseModel
 from typing import List
 from api.screenplays.services.prompt import LLMPrompt
@@ -11,12 +11,8 @@ class CharactersFromPlayResponse(PydanticBaseModel):
 class ScreenPlayResponse(PydanticBaseModel):
     screenplay: str
 
-class SceenHiglight(PydanticBaseModel):
-    title: str
-    reason: str
-
 class HighlightSceensResponse(PydanticBaseModel):
-    sceens: List[SceenHiglight]
+    sceens: List[SceneHighlight.PydanticSchema]
 
 @dataclass(frozen=True)
 class ScreenPlaySteps:
@@ -33,7 +29,7 @@ class ScreenPlaySteps:
         messages=[
             {
                 "role": "system",
-                "content": "there should not be direct operation on camera",
+                "content": "In the following screenplay look for the following mistake: there should not be direct operation on camera",
             },
         ],
         response_schema=HighlightSceensResponse
@@ -42,7 +38,7 @@ class ScreenPlaySteps:
         messages=[
             {
                 "role": "system",
-                "content": "there should be no direct narration (story have to be shown, not told)",
+                "content": "In the following screenplay look for the following mistake: there should be no direct narration (story have to be shown, not told)",
             },
         ],
         response_schema=HighlightSceensResponse
@@ -54,7 +50,7 @@ class ScreenPlaySteps:
         messages=[
             {
                 "role": "system",
-                "content": "boring sceen",
+                "content": "In the following screenplay look for the following mistake: boring sceen",
             },
         ],
         response_schema=HighlightSceensResponse
@@ -64,7 +60,7 @@ class ScreenPlaySteps:
         messages=[
             {
                 "role": "system",
-                "content": "highlight dead-ends (scenes not contributing to the Final)",
+                "content": "In the following screenplay look for the following mistake: highlight dead-ends (scenes not contributing to the Final)",
             },
         ],
         response_schema=HighlightSceensResponse
@@ -74,7 +70,7 @@ def get_and_save_characters_from_llm(screenplay: ScreenPlay):
     # Get character data from the LLM
     characters_data = ScreenPlaySteps.characters_from_play.execute(screenplay.content)
     # Extract all character names from the LLM response
-    names = [character_data.name for character_data in characters_data]
+    names = [character_data.name for character_data in characters_data.characters]
     
     # Retrieve all characters from the database matching these names for the given screenplay
     existing_qs = Character.objects.filter(name__in=names, screenplay=screenplay)

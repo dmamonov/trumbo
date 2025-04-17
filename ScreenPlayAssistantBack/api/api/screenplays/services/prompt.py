@@ -59,7 +59,7 @@ class LLMPrompt:
             temperature=self.temperature,
         )
         # Assuming the Mistral API returns a structure that has a nested parsed message object.
-        result = chat_response.choices[0].message.parsed.characters
+        result = chat_response.choices[0].message.parsed
         print(f"{model} RESPONSE:", result)
         return result
 
@@ -73,7 +73,7 @@ class LLMPrompt:
             temperature=self.temperature,
         )
         # Assuming the Mistral API returns a structure that has a nested parsed message object.
-        result = chat_response.choices[0].message.parsed.characters
+        result = chat_response.choices[0].message.parsed
         print(f"{model} RESPONSE:", type(result), result)
         return result
 

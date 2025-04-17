@@ -71,6 +71,7 @@ class ScreenPlay(BaseModel):
         else:
             for character in characters:
                 markdown += f"## {character.name}\n"
+                markdown += f"{character.names}\n"
                 markdown += f"> _All names or nicknames mentioned in the story_\n\n"
 
                 if character.role:
@@ -129,6 +130,60 @@ class ScreenPlay(BaseModel):
 
         return os.path.join('exports', filename)
 
+    def export_failed_checks_markdown(screenplay) -> str:
+        """
+        Generate a Markdown report of all failed‐check highlights for this screenplay,
+        save it to MEDIA_ROOT/exports/, and return the relative path to the file.
+        """
+        # Prepare output directory & filename
+        output_dir = os.path.join(settings.MEDIA_ROOT, 'exports')
+        os.makedirs(output_dir, exist_ok=True)
+        timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+        slug = slugify(screenplay.title)
+        filename = f"{slug}-failed-checks-{timestamp}.md"
+        filepath = os.path.join(output_dir, filename)
+
+        # Which checks to include
+        check_types = [
+            'camera_operation',
+            'show_dont_tell',
+            'boring_scene',
+            'dead_end',
+        ]
+
+        # Fetch all highlights for these checks
+        highlights = SceneHighlight.objects.filter(
+            screenplay=screenplay,
+            # name__in=check_types
+        ).order_by('name', 'id')
+
+        # Build Markdown
+        md = [f"# Failed Checks for *{screenplay.title}*\n"]
+        if not highlights:
+            md.append("_No failed checks detected._\n")
+        else:
+            current = None
+            for h in highlights:
+                if h.name != current:
+                    # New section
+                    pretty = h.name.replace('_', ' ').title()
+                    md.append(f"## {pretty}\n")
+                    current = h.name
+
+                # List each highlight
+                snippet = h.related_text.replace('\n', ' ').strip()
+                md.append(f"- **Text snippet:** `{snippet}`\n")
+                md.append(f"  - **Issue:** {h.description.strip()}\n")
+
+            md.append("")  # trailing newline
+
+        # Write out the file
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write("\n".join(md))
+
+        # Return the path relative to MEDIA_ROOT so you can do MEDIA_URL + relative_path
+        return os.path.join('exports', filename)
+
 
 class Character(BaseModel):
     """
@@ -139,6 +194,12 @@ class Character(BaseModel):
         null=False,
         blank=False,
         help_text="Full name of the character (e.g., 'Alice', 'Captain Nemo')."
+    )
+    names = models.CharField(
+        max_length=128*4,
+        null=True,
+        blank=True,
+        help_text="All names or nicknames mentioned in the story"
     )
     description = models.TextField(
         null=True,
@@ -240,6 +301,10 @@ class Character(BaseModel):
 
     class PydanticSchema(PydanticBaseModel):
         name: str
+        names: str = PydanticField(
+            ...,
+            description="All names or nicknames mentioned in the story"
+        )
         description: str
         profile: str = PydanticField(
             ...,
@@ -259,3 +324,44 @@ class Character(BaseModel):
 
     def get_owner(self):
         return self.created_by
+
+
+class SceneHighlight(BaseModel):
+    screenplay = models.ForeignKey(
+        ScreenPlay,
+        on_delete=models.CASCADE,
+        related_name='highlights'
+    )
+    name = models.CharField(
+        max_length=64,
+        help_text="Which check flagged this highlight."
+    )
+    type = models.CharField(
+        max_length=64,
+        help_text="Type of Check",
+        default=""
+    )
+    description = models.TextField(
+        help_text="Why this scene was flagged."
+    )
+    related_text = models.TextField(
+        help_text="The snippet of the screenplay this refers to."
+    )
+
+    class Meta:
+        ordering = ['screenplay', 'name']
+    
+    class Api:
+        list = [
+            'id', 'screenplay', 'name', 'description', 'related_text',
+        ]
+    
+
+    class PydanticSchema(PydanticBaseModel):
+        name: str = PydanticField(..., description="name of the highlight")
+        description: str = PydanticField(..., description="Why this scene was flagged")
+        related_text: str = PydanticField(..., description="The snippet of screenplay text that triggered the flag")
+
+        class Config:
+            orm_mode = True
+

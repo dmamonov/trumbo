@@ -58,3 +58,5 @@ django-admin-interface
 openai
 mistralai
 pydantic
+pinecone
+langchain
