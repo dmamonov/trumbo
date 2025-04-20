@@ -14,5 +14,5 @@ fun mistral() = MistralAiChatModel.builder()
 
 fun openai() = OpenAiOfficialChatModel.builder()
     .apiKey(System.getenv("OPENAI_API_KEY"))
-    .modelName(ChatModel.GPT_4O_MINI)
+    .modelName("gpt-4.1-mini")
     .build()
