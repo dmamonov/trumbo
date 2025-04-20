@@ -11,6 +11,8 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
+from api.screenplays.admin import customer_admin_site
+
 schema_view = get_schema_view(
     openapi.Info(title="Screen Play Assistant API Protocol", default_version='v1',
                  description="Screen Play Assistant API Protocol", ),
@@ -21,10 +23,13 @@ schema_view = get_schema_view(
 urlpatterns = [
     # Django Admin
     path(settings.ADMIN_URL, admin.site.urls),
+    path(settings.CUSTOMER_ADMIN_URL, customer_admin_site.urls),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
     path('api/v1/docs/', schema_view.with_ui('swagger',
                                              cache_timeout=0), name='schema-swagger-ui'),
     re_path(settings.API_URI + '/', include('api.users.urls')),
     re_path(settings.API_URI + '/', include('api.events.urls')),
+    re_path(settings.API_URI + '/', include('api.screenplays.urls')),
     re_path(settings.API_URI + '/',
             include('api.authentication.urls')),
 

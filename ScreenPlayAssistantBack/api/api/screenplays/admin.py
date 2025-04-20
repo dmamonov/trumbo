@@ -9,7 +9,7 @@ from django.http import HttpResponseRedirect
 from django.conf import settings
 
 # Models
-from api.screenplays.models import ScreenPlay, Character, SceneHighlight
+from api.screenplays.models import ScreenPlay, Character, SceneHighlight, ConflictPoint
 # Existing services
 from api.screenplays.services.screenplays import get_and_save_characters_from_llm
 from api.screenplays.services.corrections import save_document_embeddings, query_related_paragraph
@@ -21,23 +21,52 @@ from api.screenplays.services.checks import (
     dead_end_check,
 )
 
+from api.screenplays.services.conflicts import (
+    get_and_save_conflict_points_from_llm
+)
+from ckeditor.widgets import CKEditorWidget
+from django import forms
+
+class CustomerAdminSite(admin.AdminSite):
+    site_header = "Trumbo"
+    site_title = "Trumbo Portal"
+    index_title = "Welcome to Trumbo"
+
+customer_admin_site = CustomerAdminSite(name='customer_admin')
+
+class ScreenPlayAdminForm(forms.ModelForm):
+    content = forms.CharField(widget=CKEditorWidget())
+    class Meta:
+        model = ScreenPlay
+        fields = '__all__'
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['content'].widget.attrs.update({'style': 'width: 100%;'})
+
+
 @admin.register(ScreenPlay)
 class ScreenPlayAdmin(admin.ModelAdmin):
+    form = ScreenPlayAdminForm
     list_display = ScreenPlay.Api.list
+    list_filter = ScreenPlay.Api.filter
+    search_fields = ScreenPlay.Api.search
     actions = [
         "get_and_save_characters",
-        "export_characters_as_markdown",
-        "save_embedings",
-        "query_related_paragraphs",
+        # "save_embedings",
+        # "query_related_paragraphs",
         # new quality‐check actions
         "camera_operations_check",
         "show_dont_tell_check_action",
         "boring_scenes_check_action",
         "dead_end_check_action",
         "run_full_analysis",
-        "export_failed_checks_as_markdown"
+        "export_characters_as_markdown",
+        "export_failed_checks_as_markdown",
+        "export_conflict_points_as_markdown",
+        "get_and_save_conflict_points",
     ]
-    
+        
     @admin.action(description="Run Full LLM Analysis (quality checks)")
     def run_full_analysis(self, request, queryset):
         """
@@ -175,6 +204,28 @@ class ScreenPlayAdmin(admin.ModelAdmin):
             level=messages.SUCCESS
         )
         return HttpResponseRedirect(request.get_full_path())
+    
+    @admin.action(description="Generate MD File for Conflict Points Checks")
+    def export_conflict_points_as_markdown(self, request, queryset):
+        if queryset.count() != 1:
+            self.message_user(
+                request,
+                "Please select exactly one screenplay to export.",
+                level=messages.WARNING
+            )
+            return
+        screenplay = queryset.first()
+        relative_path = screenplay.export_conflict_points_markdown()
+        file_url = f"{settings.MEDIA_URL}{relative_path}"
+        self.message_user(
+            request,
+            format_html(
+                "Export complete! <a href='{}' target='_blank'>Download Markdown file</a>",
+                file_url
+            ),
+            level=messages.SUCCESS
+        )
+        return HttpResponseRedirect(request.get_full_path())
 
     @admin.action(description="Check for Direct Camera Operations")
     def camera_operations_check(self, request, queryset):
@@ -239,12 +290,43 @@ class ScreenPlayAdmin(admin.ModelAdmin):
             ) % total,
             messages.SUCCESS,
         )
+    
+    @admin.action(description="get_and_save_conflict_points")
+    def get_and_save_conflict_points(self, request, queryset):
+        total = 0
+        for sp in queryset:
+            new, _ = get_and_save_conflict_points_from_llm(sp)
+            total += len(new)
+        self.message_user(
+            request,
+            ngettext(
+                "%d Conflicts highlighted.",
+                "%d Conflicts highlighted.",
+                total,
+            ) % total,
+            messages.SUCCESS,
+        )
 
 
 @admin.register(Character)
 class CharacterAdmin(admin.ModelAdmin):
     list_display = Character.Api.list
+    list_filter = Character.Api.filter
+    search_fields = Character.Api.search
 
 @admin.register(SceneHighlight)
 class SceneHighlightAdmin(admin.ModelAdmin):
     list_display = SceneHighlight.Api.list
+    list_filter = SceneHighlight.Api.filter
+    search_fields = SceneHighlight.Api.search
+
+@admin.register(ConflictPoint)
+class ConflictPointAdmin(admin.ModelAdmin):
+    list_display = ConflictPoint.Api.list
+    list_filter = ConflictPoint.Api.filter
+    search_fields = ConflictPoint.Api.search
+
+customer_admin_site.register(ScreenPlay, ScreenPlayAdmin)
+customer_admin_site.register(Character, CharacterAdmin)
+customer_admin_site.register(SceneHighlight, SceneHighlightAdmin)
+customer_admin_site.register(ConflictPoint, ConflictPointAdmin)

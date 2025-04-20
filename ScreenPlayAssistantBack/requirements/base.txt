@@ -60,3 +60,7 @@ mistralai
 pydantic
 pinecone
 langchain
+
+# interface
+django-admin-interface
+django-ckeditor

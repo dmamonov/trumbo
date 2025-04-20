@@ -70,6 +70,8 @@ THIRD_PARTY_APPS = [
     'django_rest_passwordreset',
     'corsheaders',
     'django_filters',
+    'ckeditor',
+    'ckeditor_uploader'
 ]
 
 LOCAL_APPS = [
@@ -177,7 +179,7 @@ EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND',
 
 # Admin
 ADMIN_URL = 'admin/'
-CMS_ADMIN_URL = 'cms-admin/'
+CUSTOMER_ADMIN_URL = 'customer/'
 
 # Django REST Framework
 REST_FRAMEWORK = {
@@ -297,3 +299,13 @@ SWAGGER_SETTINGS = {
 TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
 TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
 TWILIO_FROM_PHONE_NUMBER = os.getenv('TWILIO_FROM_PHONE_NUMBER')
+
+# Styles
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+CKEDITOR_CONFIGS = {
+    'default': {
+        'width': '100%',
+        'toolbar': 'full',
+        # other CKEditor config options here
+    },
+}

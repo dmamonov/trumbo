@@ -1,4 +1,5 @@
 from rest_framework import permissions
+from rest_framework.permissions import SAFE_METHODS
 from api.users.roles import UserRoles
 
 class IsValidUserPermission(permissions.BasePermission):
@@ -82,11 +83,19 @@ class AllowAnyCreatePermission(permissions.BasePermission):
 class CanCrudPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
-        if not IsValidUserPermission.has_permission(self, request, view):
+        if not IsValidUserPermission.has_permission(IsValidUserPermission(), request, view):
             return False
+        if IsAdminPermission.has_permission(IsAdminPermission(), request, view):
+            return True
+        if request.user.is_superuser:
+            return True
         is_detail_request = 'pk' in request.parser_context['kwargs']
         if view.action == 'create' or is_detail_request:
             # validate if has access to relations
+            if view.action == 'create':
+                if not view.model.can_create(request.user, **request.data):
+                    print('MODEL PERMISSION ERROR: can not create')
+                    return False
             for fields in view.model._meta.get_fields():
                 if fields.name not in request.data:
                     continue
@@ -98,8 +107,14 @@ class CanCrudPermission(permissions.BasePermission):
                                                                                                 
     def has_object_permission(self, request, view, obj):
         # Deny actions on objects if the user is not authenticated
-        if view.action in ['retrieve']:
-            return obj.can_modify(request.user, []) or obj.can_read(request.user) or obj.is_public()
-        elif view.action in ['update', 'partial_update', 'destroy']:
-            return obj.can_modify(request.user, request.data.keys())
-        return obj.can_modify(request.user, request.data.keys())
+        if IsAdminPermission.has_permission(IsAdminPermission(), request, view):
+            return True
+        if request.user.is_superuser:
+            return True
+        if request.method in SAFE_METHODS:# view.action in ['retrieve']:
+            return obj.can_read(request.user)
+        elif view.action in ['update', 'partial_update']:
+            return obj.can_modify(request.user, request.data)
+        elif view.action in ['destroy']:
+            return obj.can_delete(request.user)
+        return obj.can_modify(request.user, request.data)

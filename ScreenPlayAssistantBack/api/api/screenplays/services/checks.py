@@ -28,6 +28,10 @@ def _run_and_save_highlight(
             type=check_name,
             description=scene.description,
             related_text=scene.related_text,
+            
+            criticality=scene.criticality,
+            certainty=scene.certainty,
+            conclusion=scene.conclusion,
         )
         created.append(highlight)
     return created

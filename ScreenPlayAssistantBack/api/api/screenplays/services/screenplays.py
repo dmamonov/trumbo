@@ -1,4 +1,4 @@
-from api.screenplays.models import Character, ScreenPlay, SceneHighlight
+from api.screenplays.models import *
 from pydantic import BaseModel as PydanticBaseModel
 from typing import List
 from api.screenplays.services.prompt import LLMPrompt
@@ -13,6 +13,9 @@ class ScreenPlayResponse(PydanticBaseModel):
 
 class HighlightSceensResponse(PydanticBaseModel):
     sceens: List[SceneHighlight.PydanticSchema]
+
+class ConflictPointResponse(PydanticBaseModel):
+    conflicts: List[ConflictPoint.PydanticSchema]
 
 @dataclass(frozen=True)
 class ScreenPlaySteps:
@@ -64,6 +67,20 @@ class ScreenPlaySteps:
             },
         ],
         response_schema=HighlightSceensResponse
+    )
+    
+    get_conflict_points_from_scene = LLMPrompt(
+        messages=[
+            {
+                "role": "system",
+                "content": "from this Scene, check if any of the mentioned conflicts was introduced or resolved",
+            },
+            # {
+            #     "role": "system",
+            #     "content": "Do not modify conflicts that are not mentioned in this sceene",
+            # },
+        ],
+        response_schema=ConflictPointResponse
     )
 
 def get_and_save_characters_from_llm(screenplay: ScreenPlay):

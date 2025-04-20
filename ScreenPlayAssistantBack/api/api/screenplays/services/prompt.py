@@ -34,7 +34,8 @@ class LLMPrompt:
         self,
         user_content: str,
         model: Optional[str] = None,
-        provider: str = "openai"
+        provider: str = "openai",
+        extra_messages: Optional[List[Dict[str, str]]] = []
     ):
         """
         Executes the prompt using the specified provider.
@@ -44,16 +45,16 @@ class LLMPrompt:
         """
         if provider.lower() == "openai":
             use_model = model if model is not None else DEFAULT_OPENAI_MODEL
-            return self._execute_openai(user_content=user_content, model=use_model)
+            return self._execute_openai(user_content=user_content, model=use_model, extra_messages=extra_messages)
         else:
             use_model = model if model is not None else MISTRAL_MODEL
-            return self._execute_mistral(user_content=user_content, model=use_model)
+            return self._execute_mistral(user_content=user_content, model=use_model, extra_messages=extra_messages)
 
-    def _execute_mistral(self, user_content: str, model: str):
+    def _execute_mistral(self, user_content: str, model: str, extra_messages=[]):
         print("Mistral API call; content length:", len(user_content))
         chat_response = mistral_client.chat.parse(
             model=model,
-            messages=self.messages + [{"role": "user", "content": user_content}],
+            messages=self.messages + [{"role": "user", "content": user_content}, *extra_messages],
             response_format=self.response_schema,
             max_tokens=self.max_tokens,
             temperature=self.temperature,
@@ -63,11 +64,11 @@ class LLMPrompt:
         print(f"{model} RESPONSE:", result)
         return result
 
-    def _execute_openai(self, user_content: str, model: str):
+    def _execute_openai(self, user_content: str, model: str, extra_messages=[]):
         print("OpenAI API call; content length:", len(user_content))
         chat_response = openai_client.beta.chat.completions.parse(
             model=model,
-            messages=self.messages + [{"role": "user", "content": user_content}],
+            messages=self.messages + [{"role": "user", "content": user_content}, *extra_messages],
             response_format=self.response_schema,
             max_tokens=self.max_tokens,
             temperature=self.temperature,
