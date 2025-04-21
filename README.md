@@ -15,7 +15,7 @@ development.
 
 ## Demo
 
-[![Watch the demo videp](assets/demo-cover.jpg)](https://www.youtube.com/watch?v=rBilzrJir-M)
+[![Watch the demo videp](assets/demo-cover.jpg)](https://youtu.be/HxUaRCMiH5U)
 
 ## Key Ideas
 
