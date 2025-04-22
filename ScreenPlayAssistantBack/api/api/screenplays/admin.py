@@ -9,7 +9,7 @@ from django.http import HttpResponseRedirect
 from django.conf import settings
 
 # Models
-from api.screenplays.models import ScreenPlay, Character, SceneHighlight, ConflictPoint
+from api.screenplays.models import ScreenPlay, Scene, Character, SceneHighlight, ConflictPoint
 # Existing services
 from api.screenplays.services.screenplays import get_and_save_characters_from_llm
 from api.screenplays.services.corrections import save_document_embeddings, query_related_paragraph
@@ -22,10 +22,12 @@ from api.screenplays.services.checks import (
 )
 
 from api.screenplays.services.conflicts import (
-    get_and_save_conflict_points_from_llm
+    get_and_save_conflict_points_from_screenplay_scene_by_scene,
+    get_and_save_conflict_points_from_screenplay
 )
 from ckeditor.widgets import CKEditorWidget
 from django import forms
+from api.screenplays.services import scenes as scene_checks
 
 class CustomerAdminSite(admin.AdminSite):
     site_header = "Trumbo"
@@ -35,14 +37,14 @@ class CustomerAdminSite(admin.AdminSite):
 customer_admin_site = CustomerAdminSite(name='customer_admin')
 
 class ScreenPlayAdminForm(forms.ModelForm):
-    content = forms.CharField(widget=CKEditorWidget())
+    # content = forms.CharField(widget=CKEditorWidget())
     class Meta:
         model = ScreenPlay
         fields = '__all__'
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['content'].widget.attrs.update({'style': 'width: 100%;'})
+        # self.fields['content'].widget.attrs.update({'style': 'width: 100%;'})
 
 
 @admin.register(ScreenPlay)
@@ -64,7 +66,8 @@ class ScreenPlayAdmin(admin.ModelAdmin):
         "export_characters_as_markdown",
         "export_failed_checks_as_markdown",
         "export_conflict_points_as_markdown",
-        "get_and_save_conflict_points",
+        "get_and_save_conflict_points_scene_by_scene",
+        "get_and_save_conflict_points"
     ]
         
     @admin.action(description="Run Full LLM Analysis (quality checks)")
@@ -291,11 +294,27 @@ class ScreenPlayAdmin(admin.ModelAdmin):
             messages.SUCCESS,
         )
     
-    @admin.action(description="get_and_save_conflict_points")
+    @admin.action(description="Identify Conflicts")
     def get_and_save_conflict_points(self, request, queryset):
         total = 0
         for sp in queryset:
-            new, _ = get_and_save_conflict_points_from_llm(sp)
+            new, _ = get_and_save_conflict_points_from_screenplay(sp)
+            total += len(new)
+        self.message_user(
+            request,
+            ngettext(
+                "%d Conflicts highlighted.",
+                "%d Conflicts highlighted.",
+                total,
+            ) % total,
+            messages.SUCCESS,
+        )
+    
+    @admin.action(description="Identify Conflicts per Scene")
+    def get_and_save_conflict_points_scene_by_scene(self, request, queryset):
+        total = 0
+        for sp in queryset:
+            new, _ = get_and_save_conflict_points_from_screenplay_scene_by_scene(sp)
             total += len(new)
         self.message_user(
             request,
@@ -326,6 +345,59 @@ class ConflictPointAdmin(admin.ModelAdmin):
     list_filter = ConflictPoint.Api.filter
     search_fields = ConflictPoint.Api.search
 
+
+@admin.register(Scene)
+class SceneAdmin(admin.ModelAdmin):
+    list_display = Scene.Api.list
+    list_filter = Scene.Api.filter
+    search_fields = Scene.Api.search
+
+    actions = [
+        'run_show_dont_tell_check',
+        'run_camera_instruction_check',
+        'run_boring_scene_check',
+        'run_dead_end_check',
+        'run_scene_feasibility_check',
+        'extract_conflict_points'
+    ]
+
+    def run_show_dont_tell_check(self, request, queryset):
+        for scene in queryset:
+            scene_checks.show_dont_tell_check(scene)
+        self.message_user(request, "Show Don't Tell check completed.")
+    run_show_dont_tell_check.short_description = "Run 'Show Don't Tell' Check"
+
+    def run_camera_instruction_check(self, request, queryset):
+        for scene in queryset:
+            scene_checks.camera_instruction_check(scene)
+        self.message_user(request, "Camera instruction check completed.")
+    run_camera_instruction_check.short_description = "Run Camera Instruction Check"
+
+    def run_boring_scene_check(self, request, queryset):
+        for scene in queryset:
+            scene_checks.boring_scene_check(scene)
+        self.message_user(request, "Boring scene check completed.")
+    run_boring_scene_check.short_description = "Run Boring Scene Check"
+
+    def run_dead_end_check(self, request, queryset):
+        for scene in queryset:
+            scene_checks.dead_end_check(scene)
+        self.message_user(request, "Dead-end scene check completed.")
+    run_dead_end_check.short_description = "Run Dead-End Scene Check"
+
+    def run_scene_feasibility_check(self, request, queryset):
+        for scene in queryset:
+            scene_checks.scene_feasibility_check(scene)
+        self.message_user(request, "Scene feasibility check completed.")
+    run_scene_feasibility_check.short_description = "Run Scene Feasibility Check"
+
+    def extract_conflict_points(self, request, queryset):
+        for scene in queryset:
+            scene_checks.extract_scene_conflicts(scene)
+        self.message_user(request, "Conflict points extracted.")
+    extract_conflict_points.short_description = "Extract Conflict Points"
+
+customer_admin_site.register(Scene, SceneAdmin)
 customer_admin_site.register(ScreenPlay, ScreenPlayAdmin)
 customer_admin_site.register(Character, CharacterAdmin)
 customer_admin_site.register(SceneHighlight, SceneHighlightAdmin)

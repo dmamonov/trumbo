@@ -3,7 +3,6 @@ from pydantic import BaseModel as PydanticBaseModel
 from typing import List
 from api.screenplays.services.prompt import LLMPrompt
 from dataclasses import dataclass
-import json
 
 class CharactersFromPlayResponse(PydanticBaseModel):
     characters: List[Character.PydanticSchema]
@@ -32,7 +31,7 @@ class ScreenPlaySteps:
         messages=[
             {
                 "role": "system",
-                "content": "In the following screenplay look for the following mistake: there should not be direct operation on camera",
+                "content": "Check if the scene uses direct camera instructions like 'pan', 'zoom', or 'close-up'. Highlight and suggest alternatives that keep the storytelling immersive without breaking the fourth wall.",
             },
         ],
         response_schema=HighlightSceensResponse
@@ -53,7 +52,11 @@ class ScreenPlaySteps:
         messages=[
             {
                 "role": "system",
-                "content": "In the following screenplay look for the following mistake: boring sceen",
+                "content":
+                    "In the following screenplay look for the following mistake: boring sceen"
+                    "\nIs the scene too long, slow, or rushed?"
+                    "\nCheck if it’s dragging or missing a key beat (setup, escalation, payoff)"
+                ,
             },
         ],
         response_schema=HighlightSceensResponse
@@ -81,6 +84,16 @@ class ScreenPlaySteps:
             # },
         ],
         response_schema=ConflictPointResponse
+    )
+    
+    scene_feasibility = LLMPrompt(
+        messages=[
+            {
+                "role": "system",
+                "content": "Evaluate this scene’s feasibility to shoot. Highlight if any visual effects (VFX), stunts, or large set pieces are implied. Estimate level of complexity.",
+            },
+        ],
+        response_schema=HighlightSceensResponse
     )
 
 def get_and_save_characters_from_llm(screenplay: ScreenPlay):

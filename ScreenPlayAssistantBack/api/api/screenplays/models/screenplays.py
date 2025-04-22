@@ -25,7 +25,7 @@ class ScreenPlay(BaseModel):
         blank=False,
         help_text="The title of the screenplay."
     )
-    content = RichTextUploadingField(
+    content = models.TextField(
         null=True,
         blank=True,
         help_text="The full text content of the screenplay."
@@ -60,48 +60,74 @@ class ScreenPlay(BaseModel):
         content: str
         position: int
 
+    def extract_scenes(self, scene_markers: Optional[List[str]] = None, save: bool = False) -> List['ScreenPlay.ParsedScene']:
+        """
+        Parse the screenplay content into scenes using sluglines, and optionally persist them.
 
-    def get_scenes(self, scene_markers: Optional[List[str]] = None) -> List[ParsedScene]:
-        content = self.content
+        Args:
+            scene_markers (List[str], optional): List of markers to detect scene headers.
+            save (bool): If True, persist the scenes to the database.
+
+        Returns:
+            List[ParsedScene]: A list of ParsedScene dataclass instances.
+        """
+        content = self.content or ""
         if scene_markers is None:
-            scene_markers = ['INT.', 'EXT.', 'INT/EXT.']
+            scene_markers = [
+                'INT.', 'EXT.', 'INT/EXT.', 'I/E.', 'INTERIOR', 'EXTERIOR'
+            ]
 
-        # Sluglines usually include markers and are all caps; capture line with marker
-        escaped = [re.escape(marker) for marker in scene_markers]
-        slugline_pattern = rf".*?(?:{'|'.join(escaped)}).*"
+        # Normalize line breaks and clean up
+        content = re.sub(r'\r\n|\r', '\n', content).strip()
 
-        lines = content.splitlines()
+        # Build a regex to detect sluglines that:
+        # - Start with a scene marker (INT., EXT., INTERIOR, etc.)
+        # - Are uppercase (typical of screenplays)
+        # - Span a single line
+        marker_pattern = '|'.join(scene_markers)
+        slugline_regex = re.compile(
+            rf'^\s*(({marker_pattern})[^\n]*)\s*$',
+            re.MULTILINE
+        )
+
+        # Find all matches (scene header positions)
+        matches = list(slugline_regex.finditer(content))
         scenes = []
-        current_slug = None
-        current_content = []
-        position = 0
 
-        for line in lines:
-            if re.match(slugline_pattern, line.strip(), re.IGNORECASE):
-                # Save current scene if exists
-                if current_slug or current_content:
-                    scenes.append(self.ParsedScene(
-                        slugline=current_slug.strip() if current_slug else "UNKNOWN",
-                        content="\n".join(current_content).strip(),
-                        position=position
-                    ))
-                    position += 1
-                    current_content = []
-                current_slug = line
-            else:
-                current_content.append(line)
+        # Iterate over matches to slice the content
+        for idx, match in enumerate(matches):
+            start = match.start()
+            end = matches[idx + 1].start() if idx + 1 < len(matches) else len(content)
 
-        # Add final scene
-        if current_slug or current_content:
+            slugline = match.group(1).strip()
+            body = content[match.end():end].strip()
+
             scenes.append(self.ParsedScene(
-                slugline=current_slug.strip() if current_slug else "UNKNOWN",
-                content="\n".join(current_content).strip(),
-                position=position
+                slugline=slugline,
+                content=body,
+                position=idx + 1
             ))
+
+        if save:
+            existing_scenes = set(
+                Scene.objects.filter(screenplay=self)
+                .values_list('slugline', 'position')
+            )
+            new_scenes = [
+                Scene(
+                    screenplay=self,
+                    slugline=scene.slugline,
+                    content=scene.content,
+                    position=scene.position
+                )
+                for scene in scenes
+                if (scene.slugline, scene.position) not in existing_scenes
+            ]
+            if new_scenes:
+                Scene.objects.bulk_create(new_scenes)
 
         return scenes
 
-    
     def get_owner(self):
         return self.created_by
 
@@ -198,45 +224,23 @@ class ScreenPlay(BaseModel):
         filename = f"{slug}-failed-checks-{timestamp}.md"
         filepath = os.path.join(output_dir, filename)
 
-        # Which checks to include
-        check_types = [
-            'camera_operation',
-            'show_dont_tell',
-            'boring_scene',
-            'dead_end',
-        ]
-
-        # Fetch all highlights for these checks
-        highlights = SceneHighlight.objects.filter(
-            screenplay=screenplay,
-            # name__in=check_types
-        ).order_by('name', 'id')
+        # Fetch highlights
+        highlights = SceneHighlight.objects.filter(screenplay=screenplay).order_by('type', 'name')
 
         # Build Markdown
-        md = [f"# Failed Checks for *{screenplay.title}*\n"]
+        md = [f"# Scene Highlights for *{screenplay.title}*\n"]
         if not highlights:
-            md.append("_No failed checks detected._\n")
+            md.append("_No highlights available._\n")
         else:
-            current = None
-            for h in highlights:
-                if h.name != current:
-                    # New section
-                    pretty = h.name.replace('_', ' ').title()
-                    md.append(f"## {h.type}: {pretty}\n")
-                    current = h.name
-
-                # List each highlight
-                snippet = h.related_text.replace('\n', ' ').strip()
-                md.append(f"- **Text snippet:** `{snippet}`\n")
-                md.append(f"  - **Issue:** {h.description.strip()}\n")
-
-            md.append("")  # trailing newline
+            for hl in highlights:
+                md.append(hl.to_markdown())
+                md.append("---")  # separator between highlights
 
         # Write out the file
         with open(filepath, 'w', encoding='utf-8') as f:
             f.write("\n".join(md))
 
-        # Return the path relative to MEDIA_ROOT so you can do MEDIA_URL + relative_path
+        # Return relative path
         return os.path.join('exports', filename)
     
     def export_conflict_points_markdown(screenplay) -> str:
@@ -271,6 +275,52 @@ class ScreenPlay(BaseModel):
 
         # Return the relative path for MEDIA_URL + relative_path usage
         return os.path.join('exports', filename)
+
+
+class Scene(BaseModel):
+    """
+    Represents a scene extracted or written within a screenplay.
+    """
+    screenplay = models.ForeignKey(
+        ScreenPlay,
+        on_delete=models.CASCADE,
+        related_name='scenes',
+        help_text="The screenplay this scene belongs to."
+    )
+    slugline = models.TextField(
+        help_text="Scene heading or slugline (e.g., 'INT. HOUSE - NIGHT')"
+    )
+    content = models.TextField(
+        help_text="Content of the scene, including action and dialogue."
+    )
+    position = models.PositiveIntegerField(
+        help_text="The order of the scene in the screenplay."
+    )
+    purpose = models.TextField(
+        null=True,
+        blank=True,
+        help_text="Narrative purpose of the scene (e.g., reveal character, raise stakes, foreshadowing)."
+    )
+
+    class Meta:
+        ordering = ['position']
+
+    def __str__(self):
+        return f"{self.screenplay.title} - Scene {self.position}: "
+
+    class Api:
+        list = ['id', 'screenplay', 'slugline', 'position', 'purpose']
+        filter = ['screenplay']
+        search = ['slugline', 'content', 'purpose']
+        write = ['id', 'screenplay', 'slugline', 'content', 'position', 'purpose']
+    
+    
+    class PydanticSchema(PydanticBaseModel):
+        screenplay: int = PydanticField(..., description="ID of the screenplay this scene belongs to")
+        slugline: str = PydanticField(..., description="Slugline (e.g., INT. ROOM - DAY)")
+        content: str = PydanticField(..., description="Text content of the scene")
+        position: int = PydanticField(..., description="Scene's position in the screenplay")
+        purpose: Optional[str] = PydanticField(None, description="Narrative purpose of the scene (e.g., character reveal, turning point, etc.)")
 
 
 class Character(BaseModel):
@@ -428,6 +478,13 @@ class Character(BaseModel):
 
 
 class SceneHighlight(BaseModel):
+    scene = models.ForeignKey(
+        Scene,
+        on_delete=models.CASCADE,
+        related_name='scene',
+        null=True,
+        blank=False,
+    )
     screenplay = models.ForeignKey(
         ScreenPlay,
         on_delete=models.CASCADE,
@@ -467,16 +524,17 @@ class SceneHighlight(BaseModel):
     
     class Api:
         list = [
-            'id', 'screenplay', 'name', 'description', 'related_text',
+            'id', 'criticality', 'certainty', 'scene', 'screenplay', 'name', 'description', 'related_text',
         ]
         filter = [
+            'scene',
             'screenplay',
         ]
         search = [
-            'name', 'description', 'related_text',
+            'scene','name', 'description', 'related_text',
         ]
         write = [
-            'id', 'screenplay', 'name', 'description', 'related_text',
+            'id', 'scene', 'screenplay', 'name', 'description', 'related_text',
         ]
     
 
@@ -487,6 +545,23 @@ class SceneHighlight(BaseModel):
         criticality: str = PydanticField(..., description="How critical this highlight is")
         certainty: float = PydanticField(..., description="Certainty score from 0.0 to 1.0")
         conclusion: str = PydanticField(..., description="What could be done improved")
+    
+    def to_markdown(self):
+        snippet = self.related_text.replace('\n', ' ').strip()
+        return f"""### 🔍 Highlight: {self.name.replace('_', ' ').title()}
+
+**📌 Type:** {self.type}  
+**🟡 Criticality:** {self.criticality}  
+**🔍 Certainty:** {self.certainty:.2f}  
+**📝 Description:**  
+{self.description.strip()}
+
+**📄 Snippet:**  
+`{snippet}`
+
+**🧠 Suggestion:**  
+{self.conclusion.strip() if self.conclusion else "_No conclusion provided._"}
+"""
 
 
 class ConflictPoint(BaseModel):

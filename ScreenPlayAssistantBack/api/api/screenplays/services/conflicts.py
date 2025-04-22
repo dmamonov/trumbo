@@ -117,7 +117,7 @@ def process_scene_for_conflict_data(
     return new_data, existing_pairs
 
 
-def get_and_save_conflict_points_from_llm(screenplay: ScreenPlay):
+def get_and_save_conflict_points_scene_by_scene(screenplay: ScreenPlay):
     """
     Orchestrator: parse scenes, call LLM per scene, create/update conflicts,
     and keep context up-to-date for each call.
@@ -167,7 +167,105 @@ def get_and_save_conflict_points_from_llm(screenplay: ScreenPlay):
 
     return all_new, all_existing
 
+# Shared Helpers
+def call_llm_for_conflicts(text: str, existing_ctx: List[Dict[str, Any]]):
+    payload = prepare_llm_context(text, existing_ctx)
+    return ScreenPlaySteps.get_conflict_points_from_scene.execute(
+        payload,
+        extra_messages=[{
+            "role": "user",
+            "content": f"Existing conflicts: {existing_ctx}"
+        }]
+    )
 
+
+def handle_conflict_response(
+    resp,
+    screenplay: ScreenPlay,
+    scene_position: Optional[int],
+    existing_keys: Dict[Tuple, ConflictPoint],
+    existing_ctx: List[Dict[str, Any]]
+) -> Tuple[List[ConflictPoint], List[ConflictPoint]]:
+    """
+    Process an LLM conflict response, create/update ConflictPoints.
+    """
+    new_instances = []
+    updated_instances = []
+
+    for cd in resp.conflicts:
+        key = (cd.conflict_name,)
+
+        if key in existing_keys:
+            inst = existing_keys[key]
+            updated = False
+
+            inst.last_updated_scene_position = scene_position or 0
+
+            for field, val in cd.dict().items():
+                if getattr(inst, field) != val:
+                    setattr(inst, field, val)
+                    updated = True
+            if updated:
+                inst.save()
+            updated_instances.append(inst)
+
+            for d in existing_ctx:
+                if (d['conflict_name'],) == key:
+                    d.update(cd.dict())
+                    break
+        else:
+            inst = ConflictPoint(**cd.dict(), screenplay=screenplay)
+            if scene_position is not None:
+                inst.start_scene_position = scene_position
+                inst.last_updated_scene_position = scene_position
+            inst.save()
+            new_instances.append(inst)
+            existing_keys[key] = inst
+            existing_ctx.append(cd.dict())
+
+    return new_instances, updated_instances
+
+def get_and_save_conflict_points_from_screenplay_scene_by_scene(screenplay: ScreenPlay):
+    _, existing_keys, existing_ctx = get_existing_conflicts(screenplay)
+    scenes = get_scenes_from_screenplay_content(screenplay.content)
+
+    all_new, all_existing = [], []
+
+    for scene in scenes:
+        try:
+            resp = call_llm_for_conflicts(scene.content, existing_ctx)
+            new_data, updated_data = handle_conflict_response(
+                resp,
+                screenplay,
+                scene.position,
+                existing_keys,
+                existing_ctx
+            )
+            all_new.extend(new_data)
+            all_existing.extend(updated_data)
+        except Exception as e:
+            print(f"[ERROR] Failed to process scene at position {scene.position}: {e}")
+            continue
+
+    return all_new, all_existing
+
+def get_and_save_conflict_points_from_screenplay(screenplay: ScreenPlay):
+    _, existing_keys, existing_ctx = get_existing_conflicts(screenplay)
+    content = screenplay.content.strip()
+
+    try:
+        resp = call_llm_for_conflicts(content, existing_ctx)
+        new_data, updated_data = handle_conflict_response(
+            resp,
+            screenplay,
+            None,  # No scene position when whole-screenplay
+            existing_keys,
+            existing_ctx
+        )
+        return new_data, updated_data
+    except Exception as e:
+        print(f"[ERROR] Failed to process full screenplay: {e}")
+        return [], []
 
 import re
 def normalize_and_index(text):
