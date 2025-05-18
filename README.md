@@ -2,7 +2,9 @@
 
 _A Sreenwriter's Tool_
 
-This is [LPB25](https://www.kxsb.org/lpb25) hackathon project.
+Currently, participating Eurasian Data Hub hackathon.\
+This project started on the [LPB25](https://www.kxsb.org/lpb25) hackathon.
+
 
 > The priority of this project is to avoid script content generation at all costs.
 
@@ -65,43 +67,19 @@ Sure, there is no strict bounds and order of work can be mixed as you like.
 
 Also, many steps are optional and can be omitted (if we don't have time/competence to perform them properly).
 
-### Week-1: Research (6-13 Apr)
+## Contribution Guide
 
-- [ ] Learn about screenwriting (see [Resources to Check](#resources-to-check) section)
-- [ ] Check existing tools on the market
-- [ ] Brainstorm ideas about potential functionality: (N)FRs
-- [ ] initial draft outline of presentation video
-- [ ] initial draft about High Level Design: architecture diagram, components
-- [ ] more to be added...
+To contribute, **please submit PR**.
 
-### Week-2: Build (14-22, NB: Easter)
+The project is in the research phase. 
 
-- [ ] draw a few high fidelity mockups to show an idea of potential app
-- [ ] implement different ideas as stand-alone python-notebooks/script to prove we can solve them
-- [ ] implement a small UI application with a piece of functionality (to highlight interactivity)
-- [ ] initial QA/evaluation
-- [ ] Create a slide deck to present the idea
-- [ ] Create a pitch script
-- [ ] Record a 3-5 minutes presentation video
+It is advised to create a separate folder for your code to avoid merge conflicts. 
 
-## Guidance on Tech/Repo/Process
+## Contributors
 
-While it will be really great to have a resulting code integrated together
-into single interactive application, that is really hard to achieve and probably
-not necessary for the scope of the hackathon.
+  - [Yerson](https://www.linkedin.com/in/yerson-lasso-0753aa1a6/)
+  - [Peter](https://www.linkedin.com/in/peterbodnar/)
 
-This is why the aim is to implement different pieces of functionality
-separately and combine them together in the final demo-video.
-
-It will be great to have an interactive part as an application,
-but not everything have to be there.
-
-- Feel free do to your part of the project in your own repository (if you like)
-- Feel free to use any language for the project (of your choice)
-- Feel free to use any technology (if you need)
-- Feel free to use any IDE/Tool for work (you prefer)
-
-P.S. `python3` is totally fine.
 
 ## Resources to Check
 
