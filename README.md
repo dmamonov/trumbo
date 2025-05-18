@@ -70,21 +70,27 @@ It is advised to create a separate folder for your code to avoid merge conflicts
 ## Backlog
 
   - [ ] 🎯 Market Research
-    - [v] Direct Competitors in Film
+    - [x] Direct Competitors in Film
   - [ ] 🌐 Frontpage Design/Positioning
     - [ ] Positioning
     - [ ] Design
-  - [ ] 🧭 UX/Navigation
-  - [ ] 🔁 UX/Patch-Approve-Rollout
+  - [ ] 🧭 UX
+    - [ ] Navigation
+    - [ ] Patch-Approve-Rollout
   - [ ] ⚙️ Data Model
     - [ ] Cord
     - [ ] Page
     - [ ] Object
     - [ ] Embeddings
   - [ ] 🤖 AI Logic Prototypes
-    - [v] Breakdown: Roles
-    - [v] Character Profile Page
-    - [v] Info Dumping Inspection
+    - [x] Breakdown: Roles
+    - [x] Character Profile Page
+    - [x] Info Dumping Inspection
+    - [ ] Character Profile Inspections
+    - [ ] Dead ends
+    - [ ] Unmotivated actions
+    - [ ] Telling not showing
+    - [ ] Direct camera operations
   - [ ] Application
     - [ ] Scriptwriting with Inspections
     - [ ] Collaborative Scriptwriting
