@@ -79,9 +79,8 @@ It is advised to create a separate folder for your code to avoid merge conflicts
 
 ## Contributors
 
-  - [Yerson](https://www.linkedin.com/in/yerson-lasso-0753aa1a6/)
-  - [Peter](https://www.linkedin.com/in/peterbodnar/)
-
+  - LPB25 - [Yerson](https://www.linkedin.com/in/yerson-lasso-0753aa1a6/)
+  - LPB25 - [Peter](https://www.linkedin.com/in/peterbodnar/)
 
 ## Resources to Check
 
