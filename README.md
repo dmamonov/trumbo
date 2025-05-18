@@ -2,6 +2,10 @@
 
 _A Sreenwriter's Tool_
 
+👋Hi, I'm Dmitry, the project owner.\
+🛠️If you want to contribute to this project\
+📬 please reach out to me in [LinkedIn](https://www.linkedin.com/in/dmamonov/). 😊
+
 Currently, participating [london hack @ eurasian hub](https://lu.ma/hag25rag?tk=Rrg3AR).\
 This project started on the [LPB25](https://www.kxsb.org/lpb25) hackathon.
 
