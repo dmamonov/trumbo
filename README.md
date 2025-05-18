@@ -2,7 +2,7 @@
 
 _A Sreenwriter's Tool_
 
-Currently, participating Eurasian Data Hub hackathon.\
+Currently, participating [london hack @ eurasian hub](https://lu.ma/hag25rag?tk=Rrg3AR).\
 This project started on the [LPB25](https://www.kxsb.org/lpb25) hackathon.
 
 
@@ -74,6 +74,8 @@ To contribute, **please submit PR**.
 The project is in the research phase. 
 
 It is advised to create a separate folder for your code to avoid merge conflicts. 
+
+
 
 ## Contributors
 
