@@ -59,14 +59,6 @@ Subscription might be free for screenwriters themselves, to attract them into th
 
 In addition, the tool can also be used in game development, which is an additional market.
 
-## Scope of Work & Guidance
-
-This section covers approximate plan for the duration of the hackathon (20 days, till Apr, 25).
-
-Sure, there is no strict bounds and order of work can be mixed as you like.
-
-Also, many steps are optional and can be omitted (if we don't have time/competence to perform them properly).
-
 ## Contribution Guide
 
 To contribute, **please submit PR**.
@@ -75,6 +67,32 @@ The project is in the research phase.
 
 It is advised to create a separate folder for your code to avoid merge conflicts. 
 
+## Backlog
+
+  - [ ] 🎯 Market Research
+    - [v] Direct Competitors in Film
+  - [ ] 🌐 Frontpage Design/Positioning
+    - [ ] Positioning
+    - [ ] Design
+  - [ ] 🧭 UX/Navigation
+  - [ ] 🔁 UX/Patch-Approve-Rollout
+  - [ ] ⚙️ Data Model
+    - [ ] Cord
+    - [ ] Page
+    - [ ] Object
+    - [ ] Embeddings
+  - [ ] 🤖 AI Logic Prototypes
+    - [v] Breakdown: Roles
+    - [v] Character Profile Page
+    - [v] Info Dumping Inspection
+  - [ ] Application
+    - [ ] Scriptwriting with Inspections
+    - [ ] Collaborative Scriptwriting
+      - [ ] with Comments
+      - [ ] with Patches
+      - [ ] with Notifications
+    - [ ] Object Model
+  - [ ] 🍒 Showcase Examples
 
 
 ## Contributors
