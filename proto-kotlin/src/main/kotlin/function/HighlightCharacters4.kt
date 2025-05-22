@@ -1,6 +1,5 @@
 package onlinedb.function
 
-import com.apple.laf.ScreenMenuBar
 import com.google.gson.Gson
 import dev.langchain4j.data.message.SystemMessage
 import dev.langchain4j.data.message.UserMessage
